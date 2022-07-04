@@ -1,34 +1,46 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-plugins {
-    id("org.springframework.boot") version "2.7.1"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.6.21"
-    kotlin("plugin.spring") version "1.6.21"
-}
-
-group = "bakkas.example"
-version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-noarg:1.3.71")
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+plugins {
+    id("org.springframework.boot") version "2.6.6" apply false
+    id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.5.10" apply false
+    id("org.jetbrains.kotlin.plugin.noarg") version "1.5.10" apply false
+    kotlin("jvm") version "1.6.21" apply false
+    kotlin("plugin.spring") version "1.6.21" apply false
+}
+
+allprojects {
+    group = "bakkas.example.kafka"
+    version = "1.0.0"
+
+    tasks.withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xjsr305=strict")
+            jvmTarget = "11"
+        }
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    apply {
+        plugin("org.springframework.boot")
+        plugin("io.spring.dependency-management")
+    }
 }
